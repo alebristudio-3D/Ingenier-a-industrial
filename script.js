@@ -23,19 +23,11 @@
   }
 
   function setupWhatsAppLinks() {
-    const links = document.querySelectorAll(".js-wa-link");
-
-    links.forEach((link) => {
+    document.querySelectorAll(".js-wa-link").forEach((link) => {
       const message = link.dataset.message;
       const origin = link.dataset.origin || "whatsapp-link";
-
-      if (message) {
-        link.href = buildWhatsAppUrl(message);
-      }
-
-      link.addEventListener("click", () => {
-        trackWhatsApp(origin);
-      });
+      if (message) link.href = buildWhatsAppUrl(message);
+      link.addEventListener("click", () => trackWhatsApp(origin));
     });
   }
 
@@ -47,8 +39,7 @@
     const panels = Array.from(tabsWrapper.querySelectorAll(".dasc-panel"));
 
     function activateTab(button) {
-      const targetId = button.dataset.tab;
-      const targetPanel = document.getElementById(targetId);
+      const targetPanel = document.getElementById(button.dataset.tab);
       if (!targetPanel) return;
 
       tabButtons.forEach((tab) => {
@@ -67,19 +58,14 @@
 
     tabButtons.forEach((button, index) => {
       button.addEventListener("click", () => activateTab(button));
-
       button.addEventListener("keydown", (event) => {
-        const key = event.key;
-        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(key)) return;
-
+        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
         event.preventDefault();
-
         let nextIndex = index;
-        if (key === "ArrowRight") nextIndex = (index + 1) % tabButtons.length;
-        if (key === "ArrowLeft") nextIndex = (index - 1 + tabButtons.length) % tabButtons.length;
-        if (key === "Home") nextIndex = 0;
-        if (key === "End") nextIndex = tabButtons.length - 1;
-
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % tabButtons.length;
+        if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = tabButtons.length - 1;
         tabButtons[nextIndex].focus();
         activateTab(tabButtons[nextIndex]);
       });
@@ -92,7 +78,6 @@
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-
       const formData = new FormData(form);
       const nombre = String(formData.get("nombre") || "").trim();
       const correo = String(formData.get("correo") || "").trim();
